@@ -119,11 +119,13 @@ const resolvers = {
         divide: (parent, args, context, info) => {
             const {number1, number2} = args
             console.log('Running divide query with number1:', number1, 'number2:', number2);
+            if(number2 === 0) throw new Error('Cannot divide by 0')
             return calculate(number1, number2, 'divide')
         },
         closestColor: (parent, args, context, info) => {
             const {hex} = args
             console.log('Running closestColor query with hex:', hex);
+            if (!/^#[0-9A-F]{6}$/i.test(hex)) throw new Error('Invalid hex color');
             return colors[findClosestColor(hex, colors)]
 
         }
