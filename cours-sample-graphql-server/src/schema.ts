@@ -29,6 +29,11 @@ type People {
   films: [Film]!
 }
 
+type User {
+  id: ID!
+  username: String!
+}
+
 type Query {
   divide(number1: Int!, number2: Int!): Float
   multiply(number1: Int!, number2: Int!): Float
@@ -41,6 +46,8 @@ type Query {
 type Mutation {
   incrementTrackViews(id: ID!): IncrementTrackViewsResponse
   incrementTrackLikes(id: ID!): IncrementTrackLikesResponse
+  createUser(username: String!, password: String!): CreateUserResponse
+  signItUser(username: String!, password: String!): SignInUserResponse
 }
 
 type IncrementTrackViewsResponse {
@@ -55,5 +62,19 @@ type IncrementTrackLikesResponse {
   success: Boolean!
   message: String!
   track: Track
+}
+
+type CreateUserResponse {
+  code: Int!
+  success: Boolean!
+  message: String!
+  user: User
+}
+
+type SignInUserResponse {
+  code: Int!
+  success: Boolean!
+  message: String!
+  token: String
 }
 `

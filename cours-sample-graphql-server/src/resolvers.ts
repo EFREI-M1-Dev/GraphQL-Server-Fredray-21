@@ -1,6 +1,9 @@
 import { GraphQLError } from "graphql";
 import { getClosestColor } from "./colors.js";
 import { Resolvers } from "./types.js";
+import { create } from "domain";
+import { createUser } from "./mutations/createUser.js";
+import { signItUser } from "./mutations/signInUser.js";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -59,7 +62,9 @@ export const resolvers: Resolvers = {
           track: null,
         }
       }
-    }
+    },
+    createUser: createUser,
+    signItUser: signItUser
   },
   Film: {
     people: ({people}, _, {dataSources}) => {

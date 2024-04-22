@@ -26,6 +26,14 @@ export type Author = {
   photo?: Maybe<Scalars['String']['output']>;
 };
 
+export type CreateUserResponse = {
+  __typename?: 'CreateUserResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
+};
+
 export type Film = {
   __typename?: 'Film';
   id: Scalars['ID']['output'];
@@ -51,8 +59,16 @@ export type IncrementTrackViewsResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createUser?: Maybe<CreateUserResponse>;
   incrementTrackLikes?: Maybe<IncrementTrackLikesResponse>;
   incrementTrackViews?: Maybe<IncrementTrackViewsResponse>;
+  signItUser?: Maybe<SignInUserResponse>;
+};
+
+
+export type MutationCreateUserArgs = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 
@@ -63,6 +79,12 @@ export type MutationIncrementTrackLikesArgs = {
 
 export type MutationIncrementTrackViewsArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationSignItUserArgs = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export type People = {
@@ -100,13 +122,28 @@ export type QueryMultiplyArgs = {
   number2: Scalars['Int']['input'];
 };
 
+export type SignInUserResponse = {
+  __typename?: 'SignInUserResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  token?: Maybe<Scalars['String']['output']>;
+};
+
 export type Track = {
   __typename?: 'Track';
   author: Author;
   id: Scalars['ID']['output'];
+  numberOfLikes?: Maybe<Scalars['Int']['output']>;
   numberOfViews?: Maybe<Scalars['Int']['output']>;
   thumbnail?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID']['output'];
+  username: Scalars['String']['output'];
 };
 
 
@@ -182,6 +219,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Author: ResolverTypeWrapper<AuthorModel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   Film: ResolverTypeWrapper<FilmModel>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
@@ -191,14 +229,17 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   People: ResolverTypeWrapper<PeopleModel>;
   Query: ResolverTypeWrapper<{}>;
+  SignInUserResponse: ResolverTypeWrapper<SignInUserResponse>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Track: ResolverTypeWrapper<TrackModel>;
+  User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Author: AuthorModel;
   Boolean: Scalars['Boolean']['output'];
+  CreateUserResponse: CreateUserResponse;
   Film: FilmModel;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
@@ -208,14 +249,24 @@ export type ResolversParentTypes = {
   Mutation: {};
   People: PeopleModel;
   Query: {};
+  SignInUserResponse: SignInUserResponse;
   String: Scalars['String']['output'];
   Track: TrackModel;
+  User: User;
 };
 
 export type AuthorResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Author'] = ResolversParentTypes['Author']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   photo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateUserResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['CreateUserResponse'] = ResolversParentTypes['CreateUserResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -243,8 +294,10 @@ export type IncrementTrackViewsResponseResolvers<ContextType = DataSourceContext
 };
 
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'password' | 'username'>>;
   incrementTrackLikes?: Resolver<Maybe<ResolversTypes['IncrementTrackLikesResponse']>, ParentType, ContextType, RequireFields<MutationIncrementTrackLikesArgs, 'id'>>;
   incrementTrackViews?: Resolver<Maybe<ResolversTypes['IncrementTrackViewsResponse']>, ParentType, ContextType, RequireFields<MutationIncrementTrackViewsArgs, 'id'>>;
+  signItUser?: Resolver<Maybe<ResolversTypes['SignInUserResponse']>, ParentType, ContextType, RequireFields<MutationSignItUserArgs, 'password' | 'username'>>;
 };
 
 export type PeopleResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['People'] = ResolversParentTypes['People']> = {
@@ -264,23 +317,41 @@ export type QueryResolvers<ContextType = DataSourceContext, ParentType extends R
   multiply?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType, RequireFields<QueryMultiplyArgs, 'number1' | 'number2'>>;
 };
 
+export type SignInUserResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['SignInUserResponse'] = ResolversParentTypes['SignInUserResponse']> = {
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TrackResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Track'] = ResolversParentTypes['Track']> = {
   author?: Resolver<ResolversTypes['Author'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  numberOfLikes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   numberOfViews?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   thumbnail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = DataSourceContext> = {
   Author?: AuthorResolvers<ContextType>;
+  CreateUserResponse?: CreateUserResponseResolvers<ContextType>;
   Film?: FilmResolvers<ContextType>;
   IncrementTrackLikesResponse?: IncrementTrackLikesResponseResolvers<ContextType>;
   IncrementTrackViewsResponse?: IncrementTrackViewsResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   People?: PeopleResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  SignInUserResponse?: SignInUserResponseResolvers<ContextType>;
   Track?: TrackResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 
